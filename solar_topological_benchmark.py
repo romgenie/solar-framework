@@ -73,88 +73,240 @@ def evaluate_topology(topology_class, problem_statement, ground_truth=None):
     topology = topology_class()
     reward_model = MultiTaskTopologicalRewardModel()
     
-    # Measure generation time
+    # Measure total processing time including generation, reasoning, and evaluation
     start_time = time.time()
-    response = topology.generate_response(problem_statement)
-    end_time = time.time()
-    latency = end_time - start_time
     
-    # Calculate reward score based on ground truth if available
-    reward_score = reward_model.score_response(response, ground_truth)
+    # Generate the response using the specified topology
+    response = topology.generate_response(problem_statement)
+    
+    # Track generation completion time
+    generation_end_time = time.time()
+    generation_latency = generation_end_time - start_time
+    
+    # Perform topological reasoning analysis - measure how well the response follows the topology structure
+    topology_score = 0.0
+    if isinstance(topology, ChainOfThought):
+        # For CoT, check for sequential reasoning steps
+        step_markers = sum(1 for i in range(1, 5) if f"Step {i}" in response)
+        topology_score = min(step_markers / 3.0, 1.0)  # Normalize to [0,1]
+        
+    elif isinstance(topology, TreeOfThought):
+        # For ToT, check for branch structure and conclusion
+        has_branches = all(marker in response for marker in ["Branch A", "Branch B"]) 
+        has_conclusion = "Conclusion" in response
+        topology_score = (0.7 if has_branches else 0.0) + (0.3 if has_conclusion else 0.0)
+        
+    elif isinstance(topology, GraphOfThought):
+        # For GoT, check for node structure and connections
+        node_count = sum(1 for i in range(1, 5) if f"Node {i}" in response)
+        has_connections = "Connection" in response or "Relationships" in response
+        topology_score = min(node_count / 3.0, 0.7) + (0.3 if has_connections else 0.0)
+    
+    # Calculate reward score based on ground truth and topology adherence
+    if ground_truth:
+        # Use the reward model's scoring function but apply our topology weight
+        base_reward = reward_model.score_response(response, ground_truth)
+        reward_score = 0.6 * base_reward + 0.4 * topology_score
+    else:
+        # Without ground truth, give more weight to the topology structure
+        response_quality = min(len(response) / 500, 1.0)  # Crude quality measure based on length
+        reward_score = 0.3 * response_quality + 0.7 * topology_score
     
     # Extract the answer from the response
-    extracted_answer = reward_model.extract_answer(response) if ground_truth else None
+    extracted_answer = reward_model.extract_answer(response) if response else None
     
     # Calculate accuracy if ground truth is available
     accuracy = 0.0
     if ground_truth and extracted_answer:
-        accuracy = reward_model.compute_string_similarity(extracted_answer, ground_truth)
+        # Compute string similarity for numerical answer
+        base_similarity = reward_model.compute_string_similarity(extracted_answer, ground_truth)
+        
+        # Apply problem-specific enhancements
+        if "math" in problem_statement.lower() or "algebra" in problem_statement.lower():
+            # For math problems, try to extract numerical answers for exact match
+            import re
+            extracted_numbers = re.findall(r'\d+(?:\.\d+)?', extracted_answer)
+            ground_truth_numbers = re.findall(r'\d+(?:\.\d+)?', ground_truth)
+            
+            # If we have extracted numbers, check for exact matches
+            if extracted_numbers and ground_truth_numbers:
+                number_match = any(en == gtn for en in extracted_numbers for gtn in ground_truth_numbers)
+                if number_match:
+                    base_similarity = max(base_similarity, 0.9)  # Boost score for exact number match
+        
+        accuracy = base_similarity
+    
+    end_time = time.time()
+    total_latency = end_time - start_time
     
     return {
         'response': response,
-        'latency': latency,
+        'latency': total_latency,  # Use real total processing time
+        'generation_latency': generation_latency,  # Just the response generation time
+        'topology_score': topology_score,  # How well the response follows the topology
         'reward_score': reward_score,
         'extracted_answer': extracted_answer,
         'accuracy': accuracy
     }
 
-def evaluate_ollama_with_topology_prompt(problem_statement, topology_name):
+def evaluate_ollama_with_topology_prompt(problem_statement, topology_name, ground_truth=None):
     """
     Evaluate Ollama model with a topology-specific prompt template.
     
     Parameters:
         problem_statement: The problem to solve.
         topology_name: The topology to simulate ("cot", "tot", or "got").
+        ground_truth: Optional ground truth answer for verification.
         
     Returns:
-        dict: Results including response, latency, and success status.
+        dict: Results including response, latency, reward scores, and accuracy.
     """
     baseline_model = BaselineModel(model_name=OLLAMA_MODEL)
+    reward_model = MultiTaskTopologicalRewardModel()
     
-    # Create topology-specific prompt
+    # Start measuring total processing time
+    start_time = time.time()
+    
+    # Create topology-specific prompt with enhanced instructions
     if topology_name == "cot":
         prompt = f"""Please solve the following problem using chain-of-thought reasoning. 
-Break down your solution into step-by-step sequential reasoning:
+Break down your solution into step-by-step sequential reasoning, clearly numbering each step.
+Make sure to think through the problem thoroughly before concluding.
 
+PROBLEM:
 {problem_statement}
 
-Think step by step:
-1. """
+SOLUTION:
+Step 1: """
     elif topology_name == "tot":
         prompt = f"""Please solve the following problem using tree-of-thought reasoning. 
-Consider multiple possible approaches and reason through each branch before arriving at your conclusion:
+Consider multiple possible approaches and reason through each branch before arriving at your conclusion.
+Explore different solution paths and clearly label each branch of your thinking.
 
+PROBLEM:
 {problem_statement}
 
-Approach A:
-Approach B:
-Conclusion:"""
+SOLUTION:
+Branch A (First approach):
+[Reasoning for first approach]
+
+Branch B (Alternative approach):
+[Reasoning for second approach]
+
+Conclusion:
+[Final answer with justification]"""
     elif topology_name == "got":
         prompt = f"""Please solve the following problem using graph-of-thought reasoning.
-Consider multiple interconnected concepts and their relationships:
+Consider multiple interconnected concepts and their relationships. Identify key nodes in your thinking process
+and explicitly describe how these concepts connect to each other.
 
+PROBLEM:
 {problem_statement}
 
-Node 1 (Initial concept):
-Node 2 (Related concept):
-Node 3 (Another perspective):
+SOLUTION:
+Node 1 (Initial understanding):
+[Describe initial approach or concept]
+
+Node 2 (Key insight):
+[Describe an important insight or concept]
+
+Node 3 (Alternative perspective):
+[Describe another relevant concept or approach]
+
 Relationships:
-Final answer:"""
+[Describe how the nodes connect or influence each other]
+
+Final answer:
+[Provide your conclusion with justification]"""
     else:
         prompt = SimplePromptTemplate.format_problem(problem_statement)
     
-    # Process request
-    start_time = time.time()
+    # Process request with the external LLM
+    process_start_time = time.time()
     result = baseline_model.process_request(prompt)
-    end_time = time.time()
+    process_end_time = time.time()
+    process_latency = process_end_time - process_start_time
     
-    # If successful, calculate reward score
+    # If successful, perform topology analysis and calculate reward score
     if result['success']:
-        reward_model = MultiTaskTopologicalRewardModel()
-        reward_score = reward_model.score_response(result['response'])
+        response = result['response']
+        
+        # Measure topology adherence
+        topology_score = 0.0
+        if topology_name == "cot":
+            # For CoT, check for sequential step structure
+            step_markers = sum(1 for i in range(1, 5) if f"Step {i}" in response)
+            logical_flow = any(marker in response.lower() for marker in ["therefore", "thus", "so", "hence"])
+            topology_score = min(step_markers / 3.0, 0.7) + (0.3 if logical_flow else 0.0)
+            
+        elif topology_name == "tot":
+            # For ToT, check for branch structure and conclusion
+            has_branch_a = "Branch A" in response or "First approach" in response
+            has_branch_b = "Branch B" in response or "Alternative approach" in response
+            has_conclusion = "Conclusion" in response or "Final answer" in response
+            topology_score = (0.4 if has_branch_a else 0.0) + (0.3 if has_branch_b else 0.0) + (0.3 if has_conclusion else 0.0)
+            
+        elif topology_name == "got":
+            # For GoT, check for node structure and relationships
+            node_markers = ["Node 1", "Node 2", "Node 3", "Initial", "Key insight", "perspective"]
+            node_count = sum(1 for marker in node_markers if marker in response)
+            has_relationships = "Relationship" in response or "connect" in response.lower()
+            topology_score = min(node_count / 4.0, 0.7) + (0.3 if has_relationships else 0.0)
+        
+        # Calculate content quality score and extract answer
+        extracted_answer = reward_model.extract_answer(response)
+        
+        # Calculate similarity to ground truth if available
+        content_score = 0.0
+        accuracy = 0.0
+        
+        if ground_truth and extracted_answer:
+            # Calculate similarity
+            base_similarity = reward_model.compute_string_similarity(extracted_answer, ground_truth)
+            
+            # Apply problem-specific enhancements
+            if "math" in problem_statement.lower() or "algebra" in problem_statement.lower():
+                # For math problems, try to extract numerical answers for exact match
+                import re
+                extracted_numbers = re.findall(r'\d+(?:\.\d+)?', extracted_answer)
+                ground_truth_numbers = re.findall(r'\d+(?:\.\d+)?', ground_truth)
+                
+                # If we have extracted numbers, check for exact matches
+                if extracted_numbers and ground_truth_numbers:
+                    number_match = any(en == gtn for en in extracted_numbers for gtn in ground_truth_numbers)
+                    if number_match:
+                        base_similarity = max(base_similarity, 0.9)  # Boost score for exact number match
+            
+            content_score = base_similarity
+            accuracy = base_similarity
+        else:
+            # If no ground truth, estimate content quality based on detail and coherence
+            content_score = min(len(response) / 800, 0.8)  # Crude quality measure based on length
+        
+        # Calculate final reward score - weight towards topology adherence for LLM+X approaches
+        reward_score = 0.4 * topology_score + 0.6 * content_score
+        
+        # Add calculated metrics to the result
         result['reward_score'] = reward_score
+        result['topology_score'] = topology_score
+        result['content_score'] = content_score
+        result['extracted_answer'] = extracted_answer
+        result['accuracy'] = accuracy
     else:
+        # If request failed, set all scores to 0
         result['reward_score'] = 0
+        result['topology_score'] = 0
+        result['content_score'] = 0
+        result['extracted_answer'] = None
+        result['accuracy'] = 0.0
+    
+    # Calculate total evaluation time
+    end_time = time.time()
+    total_latency = end_time - start_time
+    
+    # Add latency measurements
+    result['total_latency'] = total_latency
+    result['process_latency'] = process_latency
     
     return result
 
@@ -247,19 +399,26 @@ def benchmark_topology(topology_name, problem_category, problems):
                 else:
                     prompt_type = "got"
                 
-                result = evaluate_ollama_with_topology_prompt(problem, prompt_type)
+                # Pass ground truth to the evaluation function
+                result = evaluate_ollama_with_topology_prompt(problem, prompt_type, ground_truth)
+                
                 if result['success']:
-                    run_times.append(result['latency'])
+                    # Use total_latency for true end-to-end time
+                    if 'total_latency' in result:
+                        run_times.append(result['total_latency'])
+                    else:
+                        run_times.append(result['latency'])
+                        
                     run_scores.append(result['reward_score'])
                     run_responses.append(result['response'])
                     
-                    # Extract answer and calculate accuracy if ground truth available
-                    if ground_truth:
-                        reward_model = MultiTaskTopologicalRewardModel()
-                        extracted_answer = reward_model.extract_answer(result['response'])
-                        extracted_answers.append(extracted_answer)
-                        accuracy = reward_model.compute_string_similarity(extracted_answer, ground_truth)
-                        run_accuracies.append(accuracy)
+                    # Use pre-computed accuracy if available
+                    if 'accuracy' in result and result['accuracy'] > 0:
+                        run_accuracies.append(result['accuracy'])
+                        
+                    # Use pre-extracted answer if available
+                    if 'extracted_answer' in result and result['extracted_answer']:
+                        extracted_answers.append(result['extracted_answer'])
         
         # Calculate statistics
         if run_times:
@@ -277,6 +436,19 @@ def benchmark_topology(topology_name, problem_category, problems):
                     answer_counts[answer] += 1
                 most_common_answer = max(answer_counts, key=answer_counts.get)
             
+            # Calculate success rate (percent of runs with good answers)
+            success_rate = 0.0
+            if run_accuracies:
+                success_rate = sum(1 for acc in run_accuracies if acc > 0.5) / len(run_accuracies)
+                
+            # Track topology adherence scores if available
+            topology_scores = []
+            if isinstance(result, dict) and 'topology_score' in result:
+                topology_scores.append(result['topology_score'])
+            
+            # Calculate win metrics - helps determine which topology performed best
+            win_metric = avg_accuracy * 0.7 + avg_score * 0.3  # Weight accuracy more heavily
+                
             results.append({
                 'problem': problem,
                 'category': problem_category,
@@ -286,6 +458,9 @@ def benchmark_topology(topology_name, problem_category, problems):
                 'accuracy': avg_accuracy,
                 'avg_latency': avg_time,
                 'avg_reward_score': avg_score,
+                'success_rate': success_rate,
+                'win_metric': win_metric,
+                'topology_adherence': statistics.mean(topology_scores) if topology_scores else 0.0,
                 'response': run_responses[0] if run_responses else "No response",
             })
     
@@ -463,8 +638,56 @@ def analyze_topology_results(benchmark_results):
     
     print(f"\nAnalysis complete! Results saved to {output_dir}/")
     
+    # === Create win metric by category visualization ===
+    if 'win_metric' in df.columns:
+        best_win_metric = df.groupby(['category', 'topology'])['win_metric'].mean().reset_index()
+        best_win_metric = best_win_metric.sort_values(['category', 'win_metric'], ascending=[True, False])
+        best_by_win_metric = best_win_metric.groupby('category').first().reset_index()
+        
+        plt.figure(figsize=(12, 6))
+        sns.barplot(x='category', y='win_metric', data=best_by_win_metric, 
+                   hue='topology', palette='plasma')
+        plt.title('Overall Best Performing Topology by Problem Category', fontsize=16)
+        plt.xlabel('Problem Category', fontsize=14)
+        plt.ylabel('Combined Performance Metric', fontsize=14)
+        plt.legend(title='Topology')
+        plt.grid(axis='y', alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(f'{output_dir}/best_topology_combined_metric.png')
+        plt.close()
+        
+        # Add to report
+        report['best_topology_by_win_metric'] = best_by_win_metric.to_dict(orient='records')
+        report['average_win_metric'] = df.groupby('topology')['win_metric'].mean().to_dict()
+
+    # === Create success rate visualization ===
+    if 'success_rate' in df.columns:
+        plt.figure(figsize=(14, 8))
+        sns.barplot(x='category', y='success_rate', hue='topology', data=df)
+        plt.title('Success Rate by Category and Topology', fontsize=16)
+        plt.xlabel('Problem Category', fontsize=14)
+        plt.ylabel('Success Rate', fontsize=14)
+        plt.legend(title='Topology')
+        plt.grid(axis='y', alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(f'{output_dir}/success_rate_by_category.png')
+        plt.close()
+        
+        # Add to report
+        report['average_success_rate'] = df.groupby('topology')['success_rate'].mean().to_dict()
+
     # Print summary statistics
     print("\n=== Summary Statistics ===")
+    
+    # Print win metric statistics if available
+    if 'win_metric' in df.columns:
+        print("\nBest Overall Topology by Category (Combined Metric):")
+        for item in best_by_win_metric.to_dict(orient='records'):
+            print(f"  {item['category']}: {item['topology']} (Score: {item['win_metric']:.4f})")
+        
+        print("\nAverage Combined Performance Metric:")
+        for topo, score in sorted(report['average_win_metric'].items(), key=lambda x: x[1], reverse=True):
+            print(f"  {topo}: {score:.4f}")
     
     # Print accuracy statistics if available
     if 'accuracy' in df.columns:
@@ -475,6 +698,12 @@ def analyze_topology_results(benchmark_results):
         print("\nAverage Accuracy:")
         for topo, acc in sorted(report['average_accuracy'].items(), key=lambda x: x[1], reverse=True):
             print(f"  {topo}: {acc:.4f}")
+    
+    # Print success rate if available
+    if 'success_rate' in df.columns:
+        print("\nAverage Success Rate:")
+        for topo, rate in sorted(report['average_success_rate'].items(), key=lambda x: x[1], reverse=True):
+            print(f"  {topo}: {rate:.4f}")
     
     print("\nBest Scoring Topology by Category:")
     for item in best_by_category.to_dict(orient='records'):

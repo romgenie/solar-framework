@@ -53,24 +53,92 @@ class TAGSystem:
             responses[topo] = f"{topo} response for '{problem_statement}'"
         return responses
     
-    def annotate_responses(self, responses):
+    def annotate_responses(self, responses, problem_statement=None, ground_truth=None):
         """
         Annotate each generated response with a Topo Label and a Hard Label.
         
-        - Topo Label: A continuous score (simulated here as a random float between 0 and 1) representing accuracy likelihood.
-        - Hard Label: A binary correctness indicator (1 if topo label > 0.5, else 0).
+        - Topo Label: A continuous score representing quality of reasoning and likelihood of correctness
+        - Hard Label: A binary correctness indicator (1 if answer is correct, else 0)
         
         Parameters:
             responses (dict): Dictionary of generated responses keyed by topology name.
+            problem_statement (str, optional): The original problem statement for context.
+            ground_truth (str, optional): The correct answer, if available.
             
         Returns:
             dict: A dictionary where keys are topology names and values are tuples (topo_label, hard_label).
         """
+        from solar_topological_rewarding import MultiTaskTopologicalRewardModel
+        
+        # Create a reward model for scoring
+        reward_model = MultiTaskTopologicalRewardModel()
+        if ground_truth:
+            reward_model.set_ground_truth(ground_truth)
+            
         annotations = {}
         for topo, response in responses.items():
-            topo_label = random.uniform(0, 1)  # Simulated accuracy probability
-            hard_label = 1 if topo_label > 0.5 else 0  # Simulate correctness threshold
+            # Calculate structured reasoning score based on topology type
+            structure_score = 0.0
+            
+            # Score based on structural elements present in the response
+            if "Chain-of-Thought" in topo:
+                # Look for sequential step numbering
+                if all(f"Step {i}" in response for i in range(1, 3)):
+                    structure_score += 0.5
+                # Look for clear final answer section
+                if any(marker in response for marker in ["Therefore", "The answer is", "Final answer"]):
+                    structure_score += 0.3
+                    
+            elif "Tree-of-Thought" in topo:
+                # Look for branch structure
+                if all(branch in response for branch in ["Branch A", "Branch B"]):
+                    structure_score += 0.5
+                # Look for convergence/conclusion
+                if any(marker in response for marker in ["Conclusion", "Therefore", "Thus"]):
+                    structure_score += 0.3
+                    
+            elif "Graph-of-Thought" in topo:
+                # Look for node structure
+                node_count = sum(1 for i in range(1, 5) if f"Node {i}" in response)
+                structure_score += min(node_count * 0.2, 0.6)  
+                # Look for connections/relationships
+                if "Connection" in response or "Relationship" in response:
+                    structure_score += 0.3
+            
+            # Calculate answer correctness if ground truth is available
+            content_score = 0.0
+            extracted_answer = None
+            if ground_truth:
+                extracted_answer = reward_model.extract_answer(response)
+                if extracted_answer:
+                    similarity = reward_model.compute_string_similarity(extracted_answer, ground_truth)
+                    content_score = similarity
+            else:
+                # If no ground truth, estimate content quality based on detail and coherence
+                if len(response.split()) > 50:  # Reasonable length
+                    content_score = 0.6  # Default score for detailed responses
+                else:
+                    content_score = 0.3  # Lower score for short responses
+            
+            # Combine structure and content scores
+            topo_label = 0.4 * structure_score + 0.6 * content_score
+            
+            # Determine hard label (correctness) 
+            hard_label = 0
+            if ground_truth and extracted_answer:
+                # Set threshold based on problem type
+                if "math" in problem_statement.lower() or "algebra" in problem_statement.lower():
+                    # Math problems need high correctness
+                    hard_label = 1 if content_score > 0.7 else 0
+                else:
+                    # Other problems can have more flexible matching
+                    hard_label = 1 if content_score > 0.5 else 0
+            else:
+                # Without ground truth, use the topo label as a proxy
+                hard_label = 1 if topo_label > 0.7 else 0
+                
             annotations[topo] = (topo_label, hard_label)
+            
         return annotations
     
     def segment_problems(self, annotations, quantile_threshold=0.3):
