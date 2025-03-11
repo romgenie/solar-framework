@@ -29,7 +29,7 @@ from solar_dataset_loader import DatasetLoader
 # Test parameters - configurable
 NUM_RUNS = 2
 PROBLEMS_PER_CATEGORY = 1
-OLLAMA_MODEL = "llama3.2"  # Model to use for LLM generation
+OLLAMA_MODEL = "qwq"  # Model to use for LLM generation
 
 # Load benchmark problems from standard datasets
 loader = DatasetLoader()

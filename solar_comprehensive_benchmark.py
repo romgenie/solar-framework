@@ -41,7 +41,7 @@ PROBLEMS_PER_CATEGORY = 2
 
 # Test on just one model for demo purposes
 OLLAMA_MODELS = [
-    "llama3.2"
+    "qwq"
 ]
 
 # Load benchmark problems from standard datasets

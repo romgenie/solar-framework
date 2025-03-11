@@ -29,8 +29,8 @@ def parse_args():
                         help="Number of problems to use per category (default: 2)")
     parser.add_argument("--runs", type=int, default=2,
                         help="Number of runs per problem (default: 2)")
-    parser.add_argument("--ollama-model", type=str, default="llama3.2",
-                        help="Ollama model to use (default: llama3.2)")
+    parser.add_argument("--ollama-model", type=str, default="qwq",
+                        help="Ollama model to use (default: qwq)")
     
     args = parser.parse_args()
     
