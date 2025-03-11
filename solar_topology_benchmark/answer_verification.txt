@@ -1,0 +1,241 @@
+=== Ground Truth vs Extracted Answers ===
+
+
+
+== CATEGORY: ALGEBRA ==
+
+Problem: Solve the algebra problem: Solve for y in the equation 2y - 5 = 11....
+Topology: ChainOfThought
+Ground Truth: y = 8
+Extracted Answer: ': Step 1 -> Step 2 -> Final Answer
+Accuracy: 0.1000
+--------------------------------------------------------------------------------
+Problem: Solve the algebra problem: Solve for y in the equation 2y - 5 = 11....
+Topology: TreeOfThought
+Ground Truth: y = 8
+Extracted Answer: ': Branch A -> Branch B -> Merged Conclusion
+Accuracy: 0.0816
+--------------------------------------------------------------------------------
+Problem: Solve the algebra problem: Solve for y in the equation 2y - 5 = 11....
+Topology: GraphOfThought
+Ground Truth: y = 8
+Extracted Answer: ': Node 1 <-> Node 2 <-> Final Answer
+Accuracy: 0.0952
+--------------------------------------------------------------------------------
+Problem: Solve the algebra problem: Solve for y in the equation 2y - 5 = 11....
+Topology: LLM+CoT
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve the algebra problem: Solve for y in the equation 2y - 5 = 11....
+Topology: LLM+ToT
+Ground Truth: y = 8
+Extracted Answer: Both approaches lead to the same conclusion: y = 8
+Accuracy: 0.1818
+--------------------------------------------------------------------------------
+Problem: Solve the algebra problem: Solve for y in the equation 2y - 5 = 11....
+Topology: LLM+GoT
+Ground Truth: y = 8
+Extracted Answer: y is equal to 8
+Accuracy: 0.4000
+--------------------------------------------------------------------------------
+
+
+== CATEGORY: ARITHMETIC ==
+
+Problem: Solve the math problem: On Mondays, Wednesdays, and Fridays, college student Kimo has three 1-hour  ...
+Topology: ChainOfThought
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve the math problem: On Mondays, Wednesdays, and Fridays, college student Kimo has three 1-hour  ...
+Topology: TreeOfThought
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve the math problem: On Mondays, Wednesdays, and Fridays, college student Kimo has three 1-hour  ...
+Topology: GraphOfThought
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve the math problem: On Mondays, Wednesdays, and Fridays, college student Kimo has three 1-hour  ...
+Topology: LLM+CoT
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve the math problem: On Mondays, Wednesdays, and Fridays, college student Kimo has three 1-hour  ...
+Topology: LLM+ToT
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve the math problem: On Mondays, Wednesdays, and Fridays, college student Kimo has three 1-hour  ...
+Topology: LLM+GoT
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+
+
+== CATEGORY: EDGE_CASES ==
+
+Problem: Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than th...
+Topology: ChainOfThought
+Ground Truth: $0.05
+Extracted Answer: How much does the ball cost?': Step 1 -> Step 2 -> Final Answer
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it ...
+Topology: ChainOfThought
+Ground Truth: 5 minutes
+Extracted Answer: CoT response for 'Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?': Step 1 -> Step 2 -> Final Answer
+Accuracy: 0.0900
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles...
+Topology: ChainOfThought
+Ground Truth: 47 days
+Extracted Answer: If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?': Step 1 -> Step 2 -> Final Answer
+Accuracy: 0.0727
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than th...
+Topology: TreeOfThought
+Ground Truth: $0.05
+Extracted Answer: How much does the ball cost?': Branch A -> Branch B -> Merged Conclusion
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it ...
+Topology: TreeOfThought
+Ground Truth: 5 minutes
+Extracted Answer: ToT response for 'Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?': Branch A -> Branch B -> Merged Conclusion
+Accuracy: 0.0861
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles...
+Topology: TreeOfThought
+Ground Truth: 47 days
+Extracted Answer: If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?': Branch A -> Branch B -> Merged Conclusion
+Accuracy: 0.0690
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than th...
+Topology: GraphOfThought
+Ground Truth: $0.05
+Extracted Answer: How much does the ball cost?': Node 1 <-> Node 2 <-> Final Answer
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it ...
+Topology: GraphOfThought
+Ground Truth: 5 minutes
+Extracted Answer: GoT response for 'Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?': Node 1 <-> Node 2 <-> Final Answer
+Accuracy: 0.0891
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles...
+Topology: GraphOfThought
+Ground Truth: 47 days
+Extracted Answer: If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?': Node 1 <-> Node 2 <-> Final Answer
+Accuracy: 0.0719
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than th...
+Topology: LLM+CoT
+Ground Truth: $0.05
+Extracted Answer: 10
+
+Divide both sides by 2 to isolate x:
+x = $0
+Accuracy: 0.0769
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it ...
+Topology: LLM+CoT
+Ground Truth: 5 minutes
+Extracted Answer: it would take 100 machines 5 minutes to make 100 widgets
+Accuracy: 0.2769
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles...
+Topology: LLM+CoT
+Ground Truth: 47 days
+Extracted Answer: if it takes 48 days for the patch to cover the entire lake, then:
+
+- Day before (47th day), the lily pads would have covered less than half of the lake
+Accuracy: 0.0759
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than th...
+Topology: LLM+ToT
+Ground Truth: $0.05
+Extracted Answer: 05, or 5 cents
+Accuracy: 0.2105
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it ...
+Topology: LLM+ToT
+Ground Truth: 5 minutes
+Extracted Answer: if 1 machine can make 1 widget in x minutes, it would take 5x minutes to make 100 widgets (since there are 100 widgets)
+Accuracy: 0.1250
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles...
+Topology: LLM+ToT
+Ground Truth: 47 days
+Extracted Answer: Conclusion:
+The patch would take 47 days to cover half of the lake, as doubling its size on each subsequent day means that on day 47, it had previously covered half of the lake
+Accuracy: 0.0765
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than th...
+Topology: LLM+GoT
+Ground Truth: $0.05
+Extracted Answer: we can write another equation:
+   → x + y = 1
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it ...
+Topology: LLM+GoT
+Ground Truth: 5 minutes
+Extracted Answer: it would take 100 machines 100 minutes to make 100 widgets
+Accuracy: 0.2388
+--------------------------------------------------------------------------------
+Problem: Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles...
+Topology: LLM+GoT
+Ground Truth: 47 days
+Extracted Answer: it would take **2 days** for the patch to cover half of the lake
+Accuracy: 0.1408
+--------------------------------------------------------------------------------
+
+
+== CATEGORY: LOGIC ==
+
+Problem: Solve this logic problem: All roses are flowers. Some flowers fade quickly. Therefore, some roses fa...
+Topology: ChainOfThought
+Ground Truth: No, the conclusion is not valid. From 'All roses are flowers' and 'Some flowers fade quickly', we cannot conclude that 'Some roses fade quickly'. This is a fallacy of the undistributed middle term.
+Extracted Answer: some roses fade quickly
+Accuracy: 0.2091
+--------------------------------------------------------------------------------
+Problem: Solve this logic problem: All roses are flowers. Some flowers fade quickly. Therefore, some roses fa...
+Topology: TreeOfThought
+Ground Truth: No, the conclusion is not valid. From 'All roses are flowers' and 'Some flowers fade quickly', we cannot conclude that 'Some roses fade quickly'. This is a fallacy of the undistributed middle term.
+Extracted Answer: some roses fade quickly
+Accuracy: 0.2091
+--------------------------------------------------------------------------------
+Problem: Solve this logic problem: All roses are flowers. Some flowers fade quickly. Therefore, some roses fa...
+Topology: GraphOfThought
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve this logic problem: All roses are flowers. Some flowers fade quickly. Therefore, some roses fa...
+Topology: LLM+CoT
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------
+Problem: Solve this logic problem: All roses are flowers. Some flowers fade quickly. Therefore, some roses fa...
+Topology: LLM+ToT
+Ground Truth: No, the conclusion is not valid. From 'All roses are flowers' and 'Some flowers fade quickly', we cannot conclude that 'Some roses fade quickly'. This is a fallacy of the undistributed middle term.
+Extracted Answer: from Premises 1 and 2 alone, we cannot conclude that some roses fade quickly
+Accuracy: 0.4982
+--------------------------------------------------------------------------------
+Problem: Solve this logic problem: All roses are flowers. Some flowers fade quickly. Therefore, some roses fa...
+Topology: LLM+GoT
+Ground Truth: None
+Extracted Answer: None
+Accuracy: 0.0000
+--------------------------------------------------------------------------------

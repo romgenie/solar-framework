@@ -1,0 +1,329 @@
+{
+  "solar": [
+    {
+      "problem": "Solve the math problem: Joelle has 5 orchids and 4 African daisies on her balcony.  If the orchids have 5 petals and daisies have 10 petals, how many more petals do the daisies have compared to the orchids?",
+      "category": "arithmetic",
+      "ground_truth": null,
+      "extracted_answer": "If the orchids have 5 petals and daisies have 10 petals, how many more petals do the daisies have compared to the orchids?': Step 1 -> Step 2 -> Final Answer",
+      "accuracy": 0.0,
+      "selected_topology": "Chain-of-Thought",
+      "topology_distribution": {
+        "Chain-of-Thought": 1.0
+      },
+      "avg_latency": 1.9788742065429688e-05,
+      "response": "CoT response for 'Solve the math problem: Joelle has 5 orchids and 4 African daisies on her balcony.  If the orchids have 5 petals and daisies have 10 petals, how many more petals do the daisies have compared to the orchids?': Step 1 -> Step 2 -> Final Answer.",
+      "reward_score": 0.8628513221855317
+    },
+    {
+      "problem": "Solve the algebra problem: If 4x - 3 = 9, what is the value of x?",
+      "category": "algebra",
+      "ground_truth": null,
+      "extracted_answer": "ToT response for 'Solve the algebra problem: If 4x - 3 = 9, what is the value of x?': Branch A -> Branch B -> Merged Conclusion",
+      "accuracy": 0.0,
+      "selected_topology": "Tree-of-Thought",
+      "topology_distribution": {
+        "Tree-of-Thought": 1.0
+      },
+      "avg_latency": 1.0967254638671875e-05,
+      "response": "ToT response for 'Solve the algebra problem: If 4x - 3 = 9, what is the value of x?': Branch A -> Branch B -> Merged Conclusion.",
+      "reward_score": 0.9790384248725535
+    },
+    {
+      "problem": "Solve this logic problem: If all humans are mortal, and Socrates is human, then what can we conclude?",
+      "category": "logic",
+      "ground_truth": null,
+      "extracted_answer": "ToT response for 'Solve this logic problem: If all humans are mortal, and Socrates is human, then what can we conclude?': Branch A -> Branch B -> Merged Conclusion",
+      "accuracy": 0.0,
+      "selected_topology": "Tree-of-Thought",
+      "topology_distribution": {
+        "Tree-of-Thought": 1.0
+      },
+      "avg_latency": 9.298324584960938e-06,
+      "response": "ToT response for 'Solve this logic problem: If all humans are mortal, and Socrates is human, then what can we conclude?': Branch A -> Branch B -> Merged Conclusion.",
+      "reward_score": 0.541645676861701
+    },
+    {
+      "problem": "Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?",
+      "category": "edge_cases",
+      "ground_truth": "$0.05",
+      "extracted_answer": "How much does the ball cost?': Branch A -> Branch B -> Merged Conclusion",
+      "accuracy": 0.0,
+      "selected_topology": "Tree-of-Thought",
+      "topology_distribution": {
+        "Tree-of-Thought": 1.0
+      },
+      "avg_latency": 7.295608520507812e-05,
+      "response": "ToT response for 'Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?': Branch A -> Branch B -> Merged Conclusion.",
+      "reward_score": 0.08905442817702246
+    },
+    {
+      "problem": "Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?",
+      "category": "edge_cases",
+      "ground_truth": "5 minutes",
+      "extracted_answer": "ToT response for 'Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?': Branch A -> Branch B -> Merged Conclusion",
+      "accuracy": 0.0861244019138756,
+      "selected_topology": "Tree-of-Thought",
+      "topology_distribution": {
+        "Tree-of-Thought": 1.0
+      },
+      "avg_latency": 0.00013589859008789062,
+      "response": "ToT response for 'Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?': Branch A -> Branch B -> Merged Conclusion.",
+      "reward_score": 0.10781302072635868
+    },
+    {
+      "problem": "Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?",
+      "category": "edge_cases",
+      "ground_truth": "47 days",
+      "extracted_answer": "If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?': Branch A -> Branch B -> Merged Conclusion",
+      "accuracy": 0.06896551724137931,
+      "selected_topology": "Tree-of-Thought",
+      "topology_distribution": {
+        "Tree-of-Thought": 1.0
+      },
+      "avg_latency": 0.00011396408081054688,
+      "response": "ToT response for 'Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?': Branch A -> Branch B -> Merged Conclusion.",
+      "reward_score": 0.10172297802744375
+    }
+  ],
+  "hybrid": [
+    {
+      "problem": "Solve the math problem: Joelle has 5 orchids and 4 African daisies on her balcony.  If the orchids have 5 petals and daisies have 10 petals, how many more petals do the daisies have compared to the orchids?",
+      "category": "arithmetic",
+      "ground_truth": null,
+      "extracted_answer": null,
+      "accuracy": 0.0,
+      "selected_topology": "Graph-of-Thought",
+      "topology_distribution": {
+        "Graph-of-Thought": 1.0
+      },
+      "avg_latency": 1.3113021850585938e-05,
+      "response": "Fine-tuned GoT response for 'Solve the math problem: Joelle has 5 orchids and 4 African daisies on her balcony.  If the orchids have 5 petals and daisies have 10 petals, how many more petals do the daisies have compared to the orchids?': Node 1 <-> Node 2 -> Final Answer.",
+      "reward_score": 0.8574806761586312
+    },
+    {
+      "problem": "Solve the algebra problem: If 4x - 3 = 9, what is the value of x?",
+      "category": "algebra",
+      "ground_truth": "x = 3",
+      "extracted_answer": "Fine-tuned CoT response for 'Solve the algebra problem: If 4x - 3 = 9, what is the value of x?': Step 1 -> Step 2 -> Final Answer",
+      "accuracy": 0.05970149253731343,
+      "selected_topology": "Chain-of-Thought",
+      "topology_distribution": {
+        "Chain-of-Thought": 1.0
+      },
+      "avg_latency": 0.0001709461212158203,
+      "response": "Fine-tuned CoT response for 'Solve the algebra problem: If 4x - 3 = 9, what is the value of x?': Step 1 -> Step 2 -> Final Answer.",
+      "reward_score": 0.07663512774860735
+    },
+    {
+      "problem": "Solve this logic problem: If all humans are mortal, and Socrates is human, then what can we conclude?",
+      "category": "logic",
+      "ground_truth": "Socrates is mortal. This is a valid syllogistic argument (modus ponens).",
+      "extracted_answer": "Fine-tuned ToT response for 'Solve this logic problem: If all humans are mortal, and Socrates is human, then what can we conclude?': Branch A -> Branch B -> Merged Conclusion",
+      "accuracy": 0.24390243902439024,
+      "selected_topology": "Tree-of-Thought",
+      "topology_distribution": {
+        "Tree-of-Thought": 1.0
+      },
+      "avg_latency": 0.0006570816040039062,
+      "response": "Fine-tuned ToT response for 'Solve this logic problem: If all humans are mortal, and Socrates is human, then what can we conclude?': Branch A -> Branch B -> Merged Conclusion.",
+      "reward_score": 0.28388254798947093
+    },
+    {
+      "problem": "Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?",
+      "category": "edge_cases",
+      "ground_truth": "$0.05",
+      "extracted_answer": "How much does the ball cost?': Branch A -> Branch B -> Merged Conclusion",
+      "accuracy": 0.0,
+      "selected_topology": "Tree-of-Thought",
+      "topology_distribution": {
+        "Tree-of-Thought": 1.0
+      },
+      "avg_latency": 4.696846008300781e-05,
+      "response": "Fine-tuned ToT response for 'Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?': Branch A -> Branch B -> Merged Conclusion.",
+      "reward_score": 0.09019112175206227
+    },
+    {
+      "problem": "Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?",
+      "category": "edge_cases",
+      "ground_truth": "5 minutes",
+      "extracted_answer": "Fine-tuned GoT response for 'Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?': Node 1 <-> Node 2 -> Final Answer",
+      "accuracy": 0.08490566037735849,
+      "selected_topology": "Graph-of-Thought",
+      "topology_distribution": {
+        "Graph-of-Thought": 1.0
+      },
+      "avg_latency": 0.00012993812561035156,
+      "response": "Fine-tuned GoT response for 'Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?': Node 1 <-> Node 2 -> Final Answer.",
+      "reward_score": 0.16707600294202185
+    },
+    {
+      "problem": "Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?",
+      "category": "edge_cases",
+      "ground_truth": "47 days",
+      "extracted_answer": "If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?': Step 1 -> Step 2 -> Final Answer",
+      "accuracy": 0.07272727272727272,
+      "selected_topology": "Chain-of-Thought",
+      "topology_distribution": {
+        "Chain-of-Thought": 1.0
+      },
+      "avg_latency": 0.00011110305786132812,
+      "response": "Fine-tuned CoT response for 'Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?': Step 1 -> Step 2 -> Final Answer.",
+      "reward_score": 0.12049025366616056
+    }
+  ],
+  "ollama": {
+    "llama3.2": [
+      {
+        "problem": "Solve the math problem: Joelle has 5 orchids and 4 African daisies on her balcony.  If the orchids have 5 petals and daisies have 10 petals, how many more petals do the daisies have compared to the orchids?",
+        "category": "arithmetic",
+        "avg_latency": 1.6846258640289307,
+        "response": "To find out how many more petals the daisies have compared to the orchids, we need to first calculate the total number of petals on each type of flower.\n\nOrchids: 5 orchids x 5 petals/orchid = 25 petals\nAfrican Daisies: 4 daisies x 10 petals/daisy = 40 petals\n\nNow, let's subtract the total number of petals on the orchids from the total number of petals on the daisies:\n\n40 petals (daisies) - 25 petals (orchids) = 15 petals\n\nSo, the African daisies have 15 more petals than the orchids.",
+        "extracted_answer": "the African daisies have 15 more petals than the orchids",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve the algebra problem: If 4x - 3 = 9, what is the value of x?",
+        "category": "algebra",
+        "avg_latency": 1.0418620109558105,
+        "response": "To solve for x, we need to isolate the variable x on one side of the equation. We can do this by adding 3 to both sides of the equation:\n\n4x - 3 + 3 = 9 + 3\n4x = 12\n\nNext, we divide both sides of the equation by 4 to get:\n\nx = 12/4\nx = 3\n\nTherefore, the value of x is 3.",
+        "extracted_answer": "the value of x is 3",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve this logic problem: If all humans are mortal, and Socrates is human, then what can we conclude?",
+        "category": "logic",
+        "avg_latency": 1.860327959060669,
+        "response": "A classic example of a syllogism!\n\nThe statement \"all humans are mortal\" is a universal affirmative proposition, which means it applies to every member of the class \"humans\".\n\n\"Socrates is human\" is an individual affirmation, stating that Socrates belongs to the class \"humans\".\n\nTo solve this problem, we can apply the rules of syllogism:\n\n1. All humans are mortal (Premise)\n2. Socrates is human (Premise)\n\nFrom these two premises, we can conclude:\n\nSocrates is mortal\n\nIn other words, since all humans are mortal and Socrates is a human, it follows logically that Socrates must also be mortal.\n\nThis type of argumentation is called modus ponens, which states: \"If A implies B, and A is true, then B is true.\"",
+        "extracted_answer": "This type of argumentation is called modus ponens, which states: \"If A implies B, and A is true, then B is true",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?",
+        "category": "edge_cases",
+        "avg_latency": 1.7261731624603271,
+        "response": "To solve this problem, let's use algebra to represent the unknown quantities.\n\nLet x be the cost of the ball.\n\nSince the bat costs $1.00 more than the ball, the cost of the bat is x + 1.\n\nThe total cost of both the bat and the ball together is $1.10. Therefore, we can write an equation:\n\nx (ball) + (x + 1) (bat) = 1.10\n\nCombine like terms:\n\n2x + 1 = 1.10\n\nSubtract 1 from both sides:\n\n2x = 0.10\n\nDivide both sides by 2:\n\nx = 0.05\n\nSo, the ball costs $0.05 or 5 cents.",
+        "extracted_answer": "we can write an equation:\n\nx (ball) + (x + 1) (bat) = 1",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?",
+        "category": "edge_cases",
+        "avg_latency": 3.726020097732544,
+        "response": "This is a classic example of a scaling issue in probability theory. The answer might seem counterintuitive at first.\n\nTo solve this problem, let's think about the probability that any given machine makes a widget within a certain time frame. If it takes 5 machines 5 minutes to make 5 widgets, we can assume that each machine has an equal chance of producing a widget within that time frame (assuming perfect machine efficiency).\n\nFor example, if you consider a 1-minute window, the probability that one machine produces a widget in that minute is 1/5, since it takes 5 minutes for all machines to produce widgets.\n\nNow, let's scale this up to 100 machines. The probability of at least one machine producing a widget within a given time frame remains approximately the same. In fact, according to the Central Limit Theorem (CLT), as we increase the number of trials (in this case, minutes), the probability distribution becomes more Gaussian-shaped and the mean remains relatively constant.\n\nThis means that even with 100 machines, the probability of at least one machine producing a widget within a given minute is still very close to 1. In fact, it's approximately 1 - (e^(-1)) \u2248 0.63212.\n\nGiven this probability, if we wait for just one minute, it's extremely likely that at least one machine will produce a widget. In other words, with 100 machines and 100 widgets, the time it takes to make all 100 widgets is approximately 1 minute.\n\nSo, to answer your question: it would take approximately 1 minute for 100 machines to make 100 widgets.",
+        "extracted_answer": "to answer your question: it would take approximately 1 minute for 100 machines to make 100 widgets",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?",
+        "category": "edge_cases",
+        "avg_latency": 1.2281999588012695,
+        "response": "The key to solving this problem lies in understanding the growth pattern of the lily pad patch.\n\nSince the patch doubles in size every day, and on the 48th day it covers the entire lake, we can infer that:\n\n- On the 47th day, the patch must have covered half of the lake.\n- If it doubles in size on the 48th day to cover the entire lake, then it must have been half the area on the 47th day.\n\nThis is because doubling means covering more ground.",
+        "extracted_answer": "This is because doubling means covering more ground",
+        "success_rate": 1.0
+      }
+    ]
+  },
+  "baseline": {
+    "llama3.2": [
+      {
+        "problem": "Solve the math problem: Joelle has 5 orchids and 4 African daisies on her balcony.  If the orchids have 5 petals and daisies have 10 petals, how many more petals do the daisies have compared to the orchids?",
+        "category": "arithmetic",
+        "avg_latency": 2.590826988220215,
+        "response": "To solve this problem, we need to calculate the total number of petals for both types of flowers and then find the difference between them.\n\nStep 1: Calculate the total number of petals for the orchids:\nJoelle has 5 orchids. Each orchid has 5 petals.\nTotal number of petals for the orchids = Number of orchids x Petals per orchid\n= 5 x 5\n= 25\n\nStep 2: Calculate the total number of petals for the daisies:\nJoelle has 4 African daisies. Each daisy has 10 petals.\nTotal number of petals for the daisies = Number of daisies x Petals per daisy\n= 4 x 10\n= 40\n\nStep 3: Find the difference between the total number of petals for the daisies and orchids:\nDifference in petals = Total number of petals for the daisies - Total number of petals for the orchids\n= 40 - 25\n= 15\n\nTherefore, the daisies have 15 more petals compared to the orchids.",
+        "extracted_answer": "the daisies have 15 more petals compared to the orchids",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve the algebra problem: If 4x - 3 = 9, what is the value of x?",
+        "category": "algebra",
+        "avg_latency": 1.2968170642852783,
+        "response": "To solve for x, we need to isolate x on one side of the equation. Here's the step-by-step solution:\n\nStep 1: Add 3 to both sides of the equation:\n\n4x - 3 + 3 = 9 + 3\nThis simplifies to:\n4x = 12\n\nStep 2: Divide both sides of the equation by 4:\n\n(4x) / 4 = 12 / 4\nThis simplifies to:\nx = 3\n\nTherefore, the value of x is 3.",
+        "extracted_answer": "the value of x is 3",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve this logic problem: If all humans are mortal, and Socrates is human, then what can we conclude?",
+        "category": "logic",
+        "avg_latency": 1.875840187072754,
+        "response": "To solve this logic problem, let's break it down step by step.\n\nStep 1: Understand the premises given in the problem\nWe are given two premises:\n- All humans are mortal ( Premise 1)\n- Socrates is human (Premise 2)\n\nStep 2: Analyze the relationship between the premises and the conclusion\nFrom Premise 1, we know that all humans are mortal.\nFrom Premise 2, we know that Socrates is a human.\n\nStep 3: Determine what can be concluded based on the given premises\nSince Socrates is human (from Premise 2), and all humans are mortal (from Premise 1), it logically follows that Socrates must also be mortal.\n\nTherefore, based on the given premises, we can conclude that:\n\nSocrates is mortal.",
+        "extracted_answer": "based on the given premises, we can conclude that:\n\nSocrates is mortal",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve this problem carefully: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?",
+        "category": "edge_cases",
+        "avg_latency": 3.3928120136260986,
+        "response": "To solve this problem, we'll break it down into steps.\n\nStep 1: Let's denote the cost of the ball as x.\n\nSince the bat costs $1.00 more than the ball, we can represent the cost of the bat as (x + $1.00).\n\nThe total cost of both the bat and the ball is $1.10. Therefore, we can set up an equation:\n\nBat cost + Ball cost = Total cost\n(x + $1.00) + x = $1.10\n\nStep 2: Now, let's simplify the equation by combining like terms:\n\nx + $1.00 + x = $1.10\nCombine the 'x' terms:\n2x + $1.00 = $1.10\n\nStep 3: To isolate the variable (x), we need to get rid of the constant term (+$1.00) on the left side of the equation. We can do this by subtracting $1.00 from both sides:\n\n2x + $1.00 - $1.00 = $1.10 - $1.00\nThis simplifies to:\n2x = $0.10\n\nStep 4: Now, we'll divide both sides of the equation by 2 to solve for x (the cost of the ball):\n\n(2x) / 2 = $0.10 / 2\nx = $0.05\n\nTherefore, the ball costs $0.05.",
+        "extracted_answer": "we can set up an equation:\n\nBat cost + Ball cost = Total cost\n(x + $1",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve this problem carefully: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?",
+        "category": "edge_cases",
+        "avg_latency": 2.8236029148101807,
+        "response": "To solve this problem, we need to analyze the relationship between the number of machines, time, and output. Let's break it down step by step:\n\n1. We know that 5 machines can make 5 widgets in 5 minutes. This means that each machine produces 1 widget in 5 minutes.\n\n2. Since there are 5 machines, we can assume that they work simultaneously to produce the widgets. Therefore, the total output is still 5 widgets per minute, regardless of the number of machines.\n\n3. Now, if we increase the number of machines to 100, we might think that it would take less time to make 100 widgets, since there are more machines working together. However, this is not the case.\n\n4. Each machine can still produce 1 widget in 5 minutes. With 100 machines, the total output remains 100 widgets per minute (since each machine produces 1 widget per minute).\n\n5. Since we want to make 100 widgets, and each machine produces 100 widgets per minute, it would take only 1 minute for all 100 machines to produce the desired amount of widgets.\n\nTherefore, the answer is: it would take 1 minute for 100 machines to make 100 widgets.",
+        "extracted_answer": "the total output is still 5 widgets per minute, regardless of the number of machines",
+        "success_rate": 1.0
+      },
+      {
+        "problem": "Solve this problem carefully: In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 48 days for the patch to cover the entire lake, how long would it take for the patch to cover half of the lake?",
+        "category": "edge_cases",
+        "avg_latency": 6.193602800369263,
+        "response": "To solve this problem, we need to understand the concept of exponential growth. Since the lily pad patch doubles in size every day, we can model its growth using a geometric progression.\n\nLet's assume that on day 0, the lily pad patch covers x square units of area.\n\nOn day 1, the patch doubles in size, so it covers 2x square units.\nOn day 2, the patch doubles again, so it covers 4x^2 square units (i.e., 4 times the previous size).\nOn day 3, the patch doubles again, so it covers 8x^3 square units.\n\nNotice a pattern? The size of the patch on day n is 2^n \\* x^(n+1) (or more simply put: 2^n * x).\n\nWe know that after 48 days, the patch covers the entire lake. Let's assume the lake has an area A square units.\n\nOn day 48, we can set up the equation:\n\nA = 2^48 \\* A\n\nSince the entire lake is covered, this means the size of the patch on day 0 (i.e., x) must be equal to the total area A.\n\nHowever, we want to find the time it takes for the patch to cover half of the lake. This means we need to find when the patch covers an area A/2 square units.\n\nLet's use our formula from earlier and set up a new equation:\n\nA/2 = 2^48 \\* (A/2)^(1+48)\n\nTo simplify, let's divide both sides by A:\n\n(A/2)/A = 2^48 \\* (A/2)^(1+48)\n(1/2) = 2^48 \\* (A/2)^49\n(1/2) = 2^48 \\* (A/2)\n\nSince we want to find the time it takes for the patch to cover half of the lake, we can simplify this equation by dividing both sides by A:\n\n(1/2)/A = 2^(-48) \\* (1/2)\n\nThis equation tells us that on day 0, the lily pad patch covers half the area of the lake. To find when it will cover half of the lake again, we can subtract 1 from both sides and use exponent rules:\n\nday_0 - 1 = 48\nday_0 - 2^(log_2(2)) = 48\n\nSince log_2(2) equals one, 2^(-log_2(2)) is simply 1.\n\nTherefore,\n\nday_0 - 1 = 48",
+        "extracted_answer": "day_0 - 1 = 48",
+        "success_rate": 1.0
+      }
+    ]
+  },
+  "metadata": {
+    "timestamp": "2025-03-10T20:05:44.241757",
+    "num_runs": 1,
+    "models_tested": [
+      "llama3.2"
+    ]
+  },
+  "analysis": {
+    "topology_by_category": {
+      "arithmetic": {
+        "Chain-of-Thought": 1.0
+      },
+      "algebra": {
+        "Tree-of-Thought": 1.0
+      },
+      "logic": {
+        "Tree-of-Thought": 1.0
+      },
+      "edge_cases": {
+        "Tree-of-Thought": 1.0
+      }
+    },
+    "performance_by_category": {
+      "latency": {
+        "solar": {
+          "arithmetic": 1.9788742065429688e-05,
+          "algebra": 1.0967254638671875e-05,
+          "logic": 9.298324584960938e-06,
+          "edge_cases": 0.0001076062520345052
+        },
+        "hybrid": {
+          "arithmetic": 1.3113021850585938e-05,
+          "algebra": 0.0001709461212158203,
+          "logic": 0.0006570816040039062,
+          "edge_cases": 9.600321451822917e-05
+        },
+        "llama3.2": {
+          "arithmetic": 1.6846258640289307,
+          "algebra": 1.0418620109558105,
+          "logic": 1.860327959060669,
+          "edge_cases": 2.2267977396647134
+        },
+        "baseline_llama3.2": {
+          "arithmetic": 2.590826988220215,
+          "algebra": 1.2968170642852783,
+          "logic": 1.875840187072754,
+          "edge_cases": 4.136672576268514
+        }
+      }
+    }
+  }
+}

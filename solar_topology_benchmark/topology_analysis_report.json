@@ -1,0 +1,70 @@
+{
+  "best_topology_by_category": [
+    {
+      "category": "algebra",
+      "topology": "LLM+ToT",
+      "avg_reward_score": 0.8629496380171039
+    },
+    {
+      "category": "arithmetic",
+      "topology": "ChainOfThought",
+      "avg_reward_score": 0.7995291950462109
+    },
+    {
+      "category": "edge_cases",
+      "topology": "LLM+ToT",
+      "avg_reward_score": 0.7893453657109132
+    },
+    {
+      "category": "logic",
+      "topology": "LLM+CoT",
+      "avg_reward_score": 0.9324581411528178
+    }
+  ],
+  "average_scores": {
+    "ChainOfThought": 0.2367506154014455,
+    "GraphOfThought": 0.31323370650310983,
+    "LLM+CoT": 0.5391842115951027,
+    "LLM+GoT": 0.3817655795165784,
+    "LLM+ToT": 0.6829455644165295,
+    "TreeOfThought": 0.13413402036136662
+  },
+  "average_latency": {
+    "ChainOfThought": 3.178914388020833e-07,
+    "GraphOfThought": 3.5762786865234375e-07,
+    "LLM+CoT": 4.2738931973775225,
+    "LLM+GoT": 5.285968780517578,
+    "LLM+ToT": 4.9667413632074995,
+    "TreeOfThought": 1.5894571940104166e-07
+  },
+  "average_accuracy": {
+    "ChainOfThought": 0.07863636363636363,
+    "GraphOfThought": 0.04270054892572234,
+    "LLM+CoT": 0.07163258682246025,
+    "LLM+GoT": 0.12994184009529816,
+    "LLM+ToT": 0.18200262133609846,
+    "TreeOfThought": 0.07430224688456474
+  },
+  "best_topology_by_accuracy": [
+    {
+      "category": "algebra",
+      "topology": "LLM+GoT",
+      "accuracy": 0.4
+    },
+    {
+      "category": "arithmetic",
+      "topology": "ChainOfThought",
+      "accuracy": 0.0
+    },
+    {
+      "category": "edge_cases",
+      "topology": "LLM+CoT",
+      "accuracy": 0.1432651736449205
+    },
+    {
+      "category": "logic",
+      "topology": "LLM+ToT",
+      "accuracy": 0.4981684981684982
+    }
+  ]
+}
