@@ -27,6 +27,7 @@ import requests
 import concurrent.futures
 import argparse
 from datetime import datetime
+from solar_config import config
 from solar_topological_rewarding import InferencePipeline as SolarInferencePipeline
 from solar_topological_rewarding import MultiTaskTopologicalRewardModel
 from solar_hybrid_scaling import HybridScalingInference
@@ -35,13 +36,13 @@ from solar_evaluation_pipeline import EvaluationPipeline
 from baseline_model import BaselineModel, SimplePromptTemplate
 from solar_dataset_loader import DatasetLoader
 
-# Test parameters - configurable
-NUM_RUNS = 2
-PROBLEMS_PER_CATEGORY = 2
+# Test parameters - configurable from config.ini
+NUM_RUNS = config.get_num_runs()
+PROBLEMS_PER_CATEGORY = config.get_problems_per_category()
 
-# Test on just one model for demo purposes
+# Test on just one model for demo purposes (from config.ini)
 OLLAMA_MODELS = [
-    "qwq"
+    config.get_ollama_model()
 ]
 
 # Load benchmark problems from standard datasets

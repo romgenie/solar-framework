@@ -21,15 +21,16 @@ from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from solar_config import config
 from solar_topological_rewarding import ChainOfThought, TreeOfThought, GraphOfThought, MultiTaskTopologicalRewardModel
 from baseline_model import SimplePromptTemplate, BaselineModel
 from solar_hybrid_scaling import FineTunedModel
 from solar_dataset_loader import DatasetLoader
 
-# Test parameters - configurable
-NUM_RUNS = 2
-PROBLEMS_PER_CATEGORY = 1
-OLLAMA_MODEL = "qwq"  # Model to use for LLM generation
+# Test parameters - configurable from config.ini
+NUM_RUNS = config.get_num_runs()
+PROBLEMS_PER_CATEGORY = config.get_problems_per_category()
+OLLAMA_MODEL = config.get_ollama_model()  # Model to use for LLM generation
 
 # Load benchmark problems from standard datasets
 loader = DatasetLoader()

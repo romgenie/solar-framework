@@ -16,6 +16,7 @@ import sys
 import argparse
 import subprocess
 from datetime import datetime
+from solar_config import config
 
 def parse_args():
     """Parse command line arguments."""
@@ -25,12 +26,12 @@ def parse_args():
                         help="Run comprehensive benchmark comparing different frameworks")
     parser.add_argument("--topological", action="store_true", 
                         help="Run topological benchmark comparing different reasoning topologies")
-    parser.add_argument("--problems", type=int, default=2,
-                        help="Number of problems to use per category (default: 2)")
-    parser.add_argument("--runs", type=int, default=2,
-                        help="Number of runs per problem (default: 2)")
-    parser.add_argument("--ollama-model", type=str, default="qwq",
-                        help="Ollama model to use (default: qwq)")
+    parser.add_argument("--problems", type=int, default=config.get_problems_per_category(),
+                        help=f"Number of problems to use per category (default: {config.get_problems_per_category()})")
+    parser.add_argument("--runs", type=int, default=config.get_num_runs(),
+                        help=f"Number of runs per problem (default: {config.get_num_runs()})")
+    parser.add_argument("--ollama-model", type=str, default=config.get_ollama_model(),
+                        help=f"Ollama model to use (default: {config.get_ollama_model()})")
     
     args = parser.parse_args()
     
