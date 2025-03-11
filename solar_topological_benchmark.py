@@ -477,6 +477,10 @@ def run_topology_benchmarks():
         "LLM+GoT"
     ]
     
+    # Add dynamic topology predictor options
+    topologies.append("DynamicTopology")  # Uses the topology predictor
+    topologies.append("DynamicTopologyWithConfidence")  # Uses confidence-weighted selection
+    
     results = {
         'topologies': [],
         'metadata': {
@@ -486,14 +490,132 @@ def run_topology_benchmarks():
         }
     }
     
+    # Initialize and track prediction accuracy
+    prediction_accuracy = {
+        'total_predictions': 0,
+        'successful_predictions': 0,
+        'category_success': {cat: {'total': 0, 'success': 0} for cat in TEST_PROBLEMS.keys()},
+        'topology_predictions': {}
+    }
+    
     # Run benchmarks for each topology and problem category
     for topology in topologies:
         print(f"\nBenchmarking {topology}...")
         
         for category, problems in TEST_PROBLEMS.items():
             print(f"  Testing on {category} problems...")
-            category_results = benchmark_topology(topology, category, problems)
-            results['topologies'].extend(category_results)
+            
+            # Special handling for dynamic topology
+            if "DynamicTopology" in topology:
+                try:
+                    from solar_topology_predictor import TopologyPredictor
+                    predictor = TopologyPredictor()
+                    
+                    # For each problem, predict and use the best topology
+                    dynamic_results = []
+                    for problem in problems:
+                        # Predict best topology
+                        prediction = predictor.predict_topology(problem)
+                        predicted_topology = prediction['predicted_topology']
+                        predicted_class = None
+                        
+                        # Map to actual topology classes
+                        if predicted_topology == "Chain-of-Thought":
+                            predicted_class = ChainOfThought
+                        elif predicted_topology == "Tree-of-Thought":
+                            predicted_class = TreeOfThought
+                        elif predicted_topology == "Graph-of-Thought":
+                            predicted_class = GraphOfThought
+                        
+                        # Track the prediction
+                        prediction_accuracy['total_predictions'] += 1
+                        if category not in prediction_accuracy['topology_predictions']:
+                            prediction_accuracy['topology_predictions'][category] = {}
+                        if predicted_topology not in prediction_accuracy['topology_predictions'][category]:
+                            prediction_accuracy['topology_predictions'][category][predicted_topology] = 0
+                        prediction_accuracy['topology_predictions'][category][predicted_topology] += 1
+                        
+                        prediction_accuracy['category_success'][category]['total'] += 1
+                        
+                        # Evaluate using the predicted topology
+                        ground_truth = None
+                        # Find ground truth from problem details
+                        loader = DatasetLoader()
+                        problem_details = {}
+                        if category == "arithmetic":
+                            full_problems = loader.load_gsm8k(sample_size=10)
+                            for p in full_problems:
+                                problem_details[p['problem']] = p
+                        elif category == "algebra":
+                            full_problems = loader.load_aqua_rat(sample_size=10)
+                            for p in full_problems:
+                                problem_details[p['problem']] = p
+                        elif category == "logic":
+                            full_problems = loader.load_logiqa(sample_size=10)
+                            for p in full_problems:
+                                problem_details[p['problem']] = p
+                        elif category == "edge_cases":
+                            full_problems = loader.load_crt()
+                            for p in full_problems:
+                                problem_details[p['problem']] = p
+                                
+                        if problem in problem_details:
+                            if 'answer' in problem_details[problem]:
+                                ground_truth = problem_details[problem]['answer']
+                            elif 'correct_answer' in problem_details[problem]:
+                                ground_truth = problem_details[problem]['correct_answer']
+                        
+                        # Execute prediction
+                        if predicted_class:
+                            result = evaluate_topology(predicted_class, problem, ground_truth)
+                            
+                            # Add the prediction info
+                            result['predicted_topology'] = predicted_topology
+                            result['prediction_confidence'] = prediction['confidence']
+                            result['topology_scores'] = prediction['topology_scores']
+                            
+                            # Evaluate if prediction was successful (simple heuristic)
+                            prediction_success = (
+                                result['accuracy'] > 0.4 or  # Good accuracy
+                                result['reward_score'] > 0.6  # Good reward score
+                            )
+                            
+                            if prediction_success:
+                                prediction_accuracy['successful_predictions'] += 1
+                                prediction_accuracy['category_success'][category]['success'] += 1
+                            
+                            # Add results
+                            dynamic_results.append({
+                                'problem': problem,
+                                'category': category,
+                                'topology': "DynamicTopology",
+                                'actual_topology': predicted_topology,
+                                'ground_truth': ground_truth,
+                                'extracted_answer': result.get('extracted_answer'),
+                                'accuracy': result.get('accuracy', 0.0),
+                                'avg_latency': result.get('latency', 0.0),
+                                'avg_reward_score': result.get('reward_score', 0.0),
+                                'success_rate': 1.0 if prediction_success else 0.0,
+                                'win_metric': (result.get('accuracy', 0.0) * 0.7 + result.get('reward_score', 0.0) * 0.3),
+                                'prediction_confidence': prediction['confidence'],
+                                'prediction_success': prediction_success,
+                                'topology_adherence': result.get('topology_score', 0.0),
+                                'response': result.get('response', "No response")
+                            })
+                            
+                    # Add the dynamic results
+                    results['topologies'].extend(dynamic_results)
+                    
+                    # Add prediction accuracy to results
+                    results['prediction_accuracy'] = prediction_accuracy
+                    
+                except ImportError as e:
+                    print(f"  Error importing dynamic topology predictor: {e}")
+                    print("  Skipping dynamic topology benchmark.")
+            else:
+                # Standard approach for fixed topologies
+                category_results = benchmark_topology(topology, category, problems)
+                results['topologies'].extend(category_results)
     
     return results
 
@@ -675,6 +797,65 @@ def analyze_topology_results(benchmark_results):
         
         # Add to report
         report['average_success_rate'] = df.groupby('topology')['success_rate'].mean().to_dict()
+        
+    # === Create prediction success visualization if available ===
+    if 'prediction_accuracy' in benchmark_results:
+        prediction_accuracy = benchmark_results['prediction_accuracy']
+        
+        # Category prediction success
+        if prediction_accuracy['category_success']:
+            cat_success = []
+            for category, stats in prediction_accuracy['category_success'].items():
+                if stats['total'] > 0:
+                    cat_success.append({
+                        'category': category,
+                        'success_rate': stats['success'] / stats['total'] 
+                    })
+            
+            if cat_success:
+                cat_success_df = pd.DataFrame(cat_success)
+                plt.figure(figsize=(10, 6))
+                sns.barplot(x='category', y='success_rate', data=cat_success_df, palette='viridis')
+                plt.title('Topology Prediction Success Rate by Category', fontsize=16)
+                plt.xlabel('Problem Category', fontsize=14)
+                plt.ylabel('Prediction Success Rate', fontsize=14)
+                plt.grid(axis='y', alpha=0.3)
+                plt.tight_layout()
+                plt.savefig(f'{output_dir}/prediction_success_by_category.png')
+                plt.close()
+                
+        # Topology selection by category
+        if prediction_accuracy['topology_predictions']:
+            topo_selection = []
+            for category, predictions in prediction_accuracy['topology_predictions'].items():
+                for topology, count in predictions.items():
+                    topo_selection.append({
+                        'category': category,
+                        'topology': topology,
+                        'count': count
+                    })
+            
+            if topo_selection:
+                topo_selection_df = pd.DataFrame(topo_selection)
+                plt.figure(figsize=(12, 8))
+                sns.barplot(x='category', y='count', hue='topology', data=topo_selection_df, palette='plasma')
+                plt.title('Predicted Topology Selection by Category', fontsize=16)
+                plt.xlabel('Problem Category', fontsize=14)
+                plt.ylabel('Number of Selections', fontsize=14)
+                plt.legend(title='Selected Topology')
+                plt.grid(axis='y', alpha=0.3)
+                plt.tight_layout()
+                plt.savefig(f'{output_dir}/topology_selection_by_category.png')
+                plt.close()
+                
+        # Add prediction accuracy to report
+        report['prediction_accuracy'] = {
+            'overall_rate': prediction_accuracy['successful_predictions'] / prediction_accuracy['total_predictions'] 
+                           if prediction_accuracy['total_predictions'] > 0 else 0,
+            'by_category': {cat: {'success_rate': stats['success'] / stats['total']} 
+                           for cat, stats in prediction_accuracy['category_success'].items() 
+                           if stats['total'] > 0}
+        }
 
     # Print summary statistics
     print("\n=== Summary Statistics ===")
@@ -716,6 +897,29 @@ def analyze_topology_results(benchmark_results):
     print("\nAverage Latency (seconds):")
     for topo, latency in sorted(report['average_latency'].items(), key=lambda x: x[1]):
         print(f"  {topo}: {latency:.6f}")
+        
+    # Print prediction accuracy stats if available
+    if 'prediction_accuracy' in benchmark_results:
+        prediction_accuracy = benchmark_results['prediction_accuracy']
+        total_pred = prediction_accuracy['total_predictions']
+        successful_pred = prediction_accuracy['successful_predictions']
+        
+        if total_pred > 0:
+            success_rate = successful_pred / total_pred
+            print("\n=== Topology Prediction Accuracy ===")
+            print(f"Overall Prediction Success Rate: {success_rate:.4f} ({successful_pred}/{total_pred})")
+            
+            print("\nPrediction Success by Category:")
+            for category, stats in prediction_accuracy['category_success'].items():
+                if stats['total'] > 0:
+                    cat_success_rate = stats['success'] / stats['total'] 
+                    print(f"  {category}: {cat_success_rate:.4f} ({stats['success']}/{stats['total']})")
+            
+            print("\nTopology Selection by Category:")
+            for category, predictions in prediction_accuracy['topology_predictions'].items():
+                print(f"  {category}:")
+                for topology, count in predictions.items():
+                    print(f"    {topology}: {count} times")
 
 if __name__ == "__main__":
     print("Starting SOLAR Topological Components Benchmark...")
